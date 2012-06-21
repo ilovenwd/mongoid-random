@@ -7,7 +7,9 @@ module Mongoid
       field :_randomization_key, type: Float
       before_create :generate_mongoid_random_key
 
-      index [ include?(Mongoid::Paranoia) ? [ :deleted_at, 1 ] : nil, [ :_randomization_key, 1 ] ].compact # TODO: MONGOID: Apply a patch
+      index_options = { _randomization_key: 1 }
+      index_options.merge!(deleted_at: 1) if include?(Mongoid::Paranoia)
+      index index_options
     end
 
 
